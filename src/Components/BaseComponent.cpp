@@ -2,5 +2,9 @@
 
 void BaseComponent::draw(sf::RenderTarget& Target, sf::RenderStates States) const
 {
-    Target.draw(*BaseShape);
+    if (BaseShape)
+        Target.draw(*BaseShape);
+
+    if (Text)
+        Target.draw(*Text);
 }

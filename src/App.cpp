@@ -12,8 +12,8 @@ App::App()
 void App::InitCore()
 {
     // Window
-    AppWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(800, 600), "TBA Kelompok", sf::Style::Titlebar | sf::Style::Close);
-    AppWindow->setFramerateLimit(144);
+    AppWindow = std::make_shared<sf::RenderWindow>(sf::VideoMode(1000, 600), "TBA Kelompok", sf::Style::Titlebar | sf::Style::Close);
+    AppWindow->setFramerateLimit(10);
     AppWindow->setActive(false);
 
     // Clock
@@ -45,16 +45,17 @@ void App::DrawDebugMouseLocation()
 
 void App::PollEvents()
 {
-    sf::Event AppEvent;
-
     while (AppWindow->pollEvent(AppEvent))
     {
+        if (!Pages.empty())
+            Pages.top()->ReceiveEvent(AppEvent);
+
         switch (AppEvent.type)
         {
         case sf::Event::Closed:
             AppWindow->close();
             break;
-        
+
         default:
             break;
         }
@@ -70,7 +71,6 @@ void App::Tick()
         Pages.top()->Tick(DeltaTime);
 }
 
-
 void App::DrawThread()
 {
     AppWindow->setActive(true);
@@ -81,8 +81,7 @@ void App::DrawThread()
 
         if (!Pages.empty())
             Pages.top()->Draw(AppWindow.get());
-        DrawDebugMouseLocation();
-        
+        // DrawDebugMouseLocation();
         AppWindow->display();
     }
 }
@@ -90,7 +89,7 @@ void App::DrawThread()
 void App::Run()
 {
     // Main Page
-    Pages.push(std::make_unique<MainPage>());
+    Pages.push(std::make_unique<MainPage>(this));
 
     // Rendering Thread
     sf::Thread RenderingThread(&App::DrawThread, this);

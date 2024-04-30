@@ -1,17 +1,21 @@
 #include "MainPage.h"
-#include "../Components/Button.h"
+#include "Components/Button.h"
 
-MainPage::MainPage()
+MainPage::MainPage(App* Application):
+    Super(Application)
 {
-    CreateButtons();    
+    CreateButtons();  
 }
 
 void MainPage::CreateButtons()
 {
-    Button* TestBtn = Button::MakeButton({
-        .Size={ 40.f, 20.f }, 
-        .Position={100.f, 100.f }}
-    );
+    Button* TestBtn = Button::MakeButton(this, {
+        .Size={ 130.f, 60.f }, 
+        .Position=SetPositionPercent(50.f, 10.f),
+        .BorderRadius=8.f,
+        .TextString="Hello!"
+    });
+    TestBtn->OnPressed.Bind(this, &MainPage::TestBtnOnPressed);
 
     AddComponent(TestBtn);
 }

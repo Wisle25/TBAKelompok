@@ -7,3 +7,4 @@
 #include <iostream> // Remove later at release
 
 #include "SFML/Graphics.hpp"
+#include "Core/Delegate.h"

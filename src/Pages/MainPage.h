@@ -6,8 +6,17 @@
 class MainPage : public BasePage
 {
 public:
-    MainPage();
+    typedef BasePage Super;
+
+    MainPage(App* Application);
 
 private:
+    // ***===== Buttons =====*** //
+
     void CreateButtons();
+
+    void TestBtnOnPressed()
+    {
+        std::cout << "DELEGATE FROM MAIN PAGE!\n";
+    }
 };
