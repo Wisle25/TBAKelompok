@@ -3,8 +3,6 @@
 #include "Core.h"
 #include "Components/BaseComponent.h"
 
-class BasePage;
-
 enum class ButtonState : sf::Uint8 
 {
     None,

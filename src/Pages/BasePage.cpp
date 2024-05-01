@@ -8,7 +8,6 @@
 void BasePage::Prepare(std::shared_ptr<App> InApplication)
 {
     Application = InApplication;
-    AppWindow   = Application->GetAppWindow();
 
     CreateLayout();
 }
@@ -69,7 +68,7 @@ void BasePage::CreateLayout()
 
     Button* BackButton = MakeButton({
         .Size={ 80.f, 30.f }, 
-        .Position=SetPositionPercent(95.f, 95.f)
+        .Position=CalculateByScreenPercent(95.f, 95.f)
     }, {
         .TextString="Keluar"
     });
@@ -79,6 +78,15 @@ void BasePage::CreateLayout()
 
 ////////////////////////////////////////////////////
 // ==================== ?/?? ==================== //
+
+sf::Vector2f BasePage::CalculateByScreenPercent(const float X, const float Y)
+{
+    return {
+        Application->GetAppWindow()->getSize().x * X / 100.f,
+        Application->GetAppWindow()->getSize().y * Y / 100.f
+    };
+}
+
 
 void BasePage::QuitPage()
 {

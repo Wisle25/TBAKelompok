@@ -31,15 +31,15 @@ private:
         double Heuristic;
         Cell* Parent;
         bool IsObstacle = false;
-        sf::Vector2i GridPosition; // Added
-
+        sf::Vector2i GridPosition;
+        
         Cell() {}
 
-        Cell(sf::Vector2f position, double cost, double heuristic, Cell* parent, sf::Shape* shape, sf::Vector2i gridPosition) // Modified
-            : Position(position), Cost(cost), Heuristic(heuristic), Parent(parent), Shape(shape), GridPosition(gridPosition) {} // Modified
+        Cell(sf::Vector2f position, double cost, double heuristic, Cell* parent, sf::Shape* shape, sf::Vector2i gridPosition)
+            : Position(position), Cost(cost), Heuristic(heuristic), Parent(parent), Shape(shape), GridPosition(gridPosition) {}
 
         // Calculate total cost (f = g + h)
-        double GetTotalCost() const 
+        __forceinline double GetTotalCost() const 
         {
             return Cost + Heuristic;
         }

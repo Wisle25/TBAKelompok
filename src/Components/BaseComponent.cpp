@@ -1,9 +1,10 @@
 #include "BaseComponent.h"
 #include "App.h"
 #include "Pages/BasePage.h"
+#include "Shapes/RoundedRectangleShape.h"
 
 BaseComponent::BaseComponent(BasePage* Page):
-    Application(Page->GetApp())
+    Page(Page)
 {
 
 }
@@ -17,14 +18,11 @@ void BaseComponent::draw(sf::RenderTarget& Target, sf::RenderStates States) cons
         Target.draw(*Text);
 }
 
-void BaseComponent::MakeText(BasePage* Page, const FMakeText& Properties)
+void BaseComponent::MakeText(const FMakeText& Properties)
 {
-    if (!Application)
-        Application = Page->GetApp();
-
     sf::Text* Text = new sf::Text(
         Properties.TextString,
-        Application->GetFont(Properties.FontName),
+        Page->GetApp()->GetFont(Properties.FontName),
         Properties.Size
     );
     Text->setColor(Properties.Color);
@@ -37,7 +35,22 @@ void BaseComponent::MakeText(BasePage* Page, const FMakeText& Properties)
 sf::Vector2f BaseComponent::CalculateByScreenPercent(const float X, const float Y)
 {
     return {
-        Application->GetAppWindow()->getSize().x * X / 100.f,
-        Application->GetAppWindow()->getSize().y * Y / 100.f
+        Page->GetApp()->GetAppWindow()->getSize().x * X / 100.f,
+        Page->GetApp()->GetAppWindow()->getSize().y * Y / 100.f
     };
+}
+
+sf::RoundedRectangleShape* BaseComponent::MakeRoundedRect(const FMakeShape& Properties)
+{
+    sf::RoundedRectangleShape* NewShape = new sf::RoundedRectangleShape(Properties.Size, Properties.BorderRadius, 8);
+    
+    NewShape->setOrigin(Properties.Size / 2.f);
+    NewShape->setPosition(Properties.Position);
+    NewShape->setFillColor(Properties.Color);
+    NewShape->setOutlineColor(Properties.OutlineColor);
+    NewShape->setOutlineThickness(Properties.OutlineThickness); 
+
+    Shapes.push_back(std::unique_ptr<sf::RoundedRectangleShape>(std::move(NewShape)));
+
+    return NewShape;
 }

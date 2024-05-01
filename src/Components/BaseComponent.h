@@ -2,7 +2,11 @@
 
 #include "Core.h"
 
-class App;
+namespace sf
+{
+class RoundedRectangleShape;
+}
+
 class BasePage;
 
 struct FMakeText
@@ -42,7 +46,7 @@ public:
 protected:
     // ***===== References =====*** //
 
-    std::shared_ptr<App> Application;
+    std::shared_ptr<BasePage> Page;
 
     sf::Vector2f CalculateByScreenPercent(const float X, const float Y);
 
@@ -54,21 +58,7 @@ protected:
     std::vector<std::unique_ptr<sf::Shape>> Shapes;
     std::vector<std::unique_ptr<sf::Text>> Texts;
 
-    template <typename Shape>
-    __forceinline Shape* MakeShape(const FMakeShape& Properties)
-    {
-        Shape* NewShape = new Shape(Properties.Size, Properties.BorderRadius, 8);
-        
-        NewShape->setOrigin(Properties.Size / 2.f);
-        NewShape->setPosition(Properties.Position);
-        NewShape->setFillColor(Properties.Color);
-        NewShape->setOutlineColor(Properties.OutlineColor);
-        NewShape->setOutlineThickness(Properties.OutlineThickness); 
+    sf::RoundedRectangleShape* MakeRoundedRect(const FMakeShape& Properties);
 
-        Shapes.push_back(std::unique_ptr<Shape>(std::move(NewShape)));
-
-        return NewShape;
-    }
-
-    void MakeText(BasePage* Page, const FMakeText& Properties);
+    void MakeText(const FMakeText& Properties);
 };

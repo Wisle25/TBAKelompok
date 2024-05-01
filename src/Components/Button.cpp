@@ -1,13 +1,12 @@
 #include "Button.h"
 #include "App.h"
 #include "Pages/BasePage.h"
-#include "Shapes/RoundedRectangleShape.h"
 
 Button::Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties):
     Super(Page)
 {
     // Button
-    MakeShape<sf::RoundedRectangleShape>(ShapeProperties);
+    MakeRoundedRect(ShapeProperties);
 
     if (TextProperties.TextString != "")
     {
@@ -16,7 +15,7 @@ Button::Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeTex
         FinalTextProperties.Size = TextSize;
         FinalTextProperties.Position = ShapeProperties.Position;
 
-        MakeText(Page, FinalTextProperties);
+        MakeText(FinalTextProperties);
     }
 
     // Core
@@ -36,7 +35,7 @@ void Button::ReceiveEvent(const sf::Event& Event)
 
 void Button::UpdateState(const sf::Event& Event)
 {
-    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*Application->GetAppWindow());
+    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*Page->GetApp()->GetAppWindow());
     const sf::Vector2f MousePositionFloat = { static_cast<float>(MousePosition.x), static_cast<float>(MousePosition.y) };
 
     // Pressed
@@ -52,7 +51,7 @@ void Button::UpdateState(const sf::Event& Event)
 
             // Change mouse cursor
             Cursor.loadFromSystem(sf::Cursor::Arrow);
-            Application->GetAppWindow()->setMouseCursor(Cursor);
+            Page->GetApp()->GetAppWindow()->setMouseCursor(Cursor);
         }
     }
     // Clicked
@@ -74,7 +73,7 @@ void Button::UpdateState(const sf::Event& Event)
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Hand);
-        Application->GetAppWindow()->setMouseCursor(Cursor);
+        Page->GetApp()->GetAppWindow()->setMouseCursor(Cursor);
     }
     // None
     else if (State != ButtonState::None)
@@ -85,6 +84,6 @@ void Button::UpdateState(const sf::Event& Event)
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Arrow);
-        Application->GetAppWindow()->setMouseCursor(Cursor);
+        Page->GetApp()->GetAppWindow()->setMouseCursor(Cursor);
     }
 }

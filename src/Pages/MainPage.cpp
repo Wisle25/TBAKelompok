@@ -12,7 +12,7 @@ void MainPage::CreateLayout()
     AddText({
         .TextString="Tugas Kelompok TBA",
         .Size=24,
-        .Position=SetPositionPercent(50.f, 5.f),
+        .Position=CalculateByScreenPercent(50.f, 5.f),
         .Style=sf::Text::Style::Bold | sf::Text::Style::Underlined
     });
 
@@ -20,7 +20,7 @@ void MainPage::CreateLayout()
 
     Button* NumOne = MakeButton({
         .Size={ 280.f, 50.f }, 
-        .Position=SetPositionPercent(50.f, 20.f),
+        .Position=CalculateByScreenPercent(50.f, 20.f),
     }, {
         .TextString="NFA or e-NFA to DFA"
     });

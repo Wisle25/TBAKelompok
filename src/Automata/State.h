@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "Components/BaseComponent.h"
 
 class State
 {

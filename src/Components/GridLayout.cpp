@@ -1,6 +1,7 @@
 #include "GridLayout.h"
-#include "App.h"
 #include "Shapes/RoundedRectangleShape.h"
+// #include "App.h"
+// #include "Pages/BasePage.h"
 
 GridLayout::GridLayout(BasePage* Page, const FMakeShape& ShapeProps):
     Super(Page)
@@ -11,7 +12,7 @@ GridLayout::GridLayout(BasePage* Page, const FMakeShape& ShapeProps):
 
     Props = FinalShapeProps;
 
-    MakeShape<sf::RoundedRectangleShape>(FinalShapeProps);
+    MakeRoundedRect(FinalShapeProps);
     GenerateGrid();
 }
 
@@ -32,7 +33,7 @@ void GridLayout::GenerateGrid()
         {
             sf::Vector2f CurrentPosition = sf::Vector2f(X, Y) * GridSize + StartedPosition;
 
-            sf::RoundedRectangleShape* Shape = MakeShape<sf::RoundedRectangleShape>({
+            sf::RoundedRectangleShape* Shape = MakeRoundedRect({
                 .Size=sf::Vector2f(GridSize, GridSize),
                 .Position=CurrentPosition,
                 .Color=sf::Color::Transparent,
@@ -57,10 +58,10 @@ void GridLayout::ReceiveEvent(const sf::Event& Event)
     // {
     //     case sf::Event::MouseButtonPressed:
     //     {
-    //         sf::Vector2i MousePosition      = sf::Mouse::getPosition(*Application->GetAppWindow());
+    //         sf::Vector2i MousePosition      = sf::Mouse::getPosition(*Page->GetApp()->GetAppWindow());
     //         sf::Vector2f WorldMousePosition;
-    //         WorldMousePosition.x = MousePosition.x * Application->GetAppWindow()->getDefaultView().getSize().x / 1000.f;
-    //         WorldMousePosition.y = MousePosition.y * Application->GetAppWindow()->getDefaultView().getSize().y / 600.f;
+    //         WorldMousePosition.x = MousePosition.x * Page->GetApp()->GetAppWindow()->getDefaultView().getSize().x / 1000.f;
+    //         WorldMousePosition.y = MousePosition.y * Page->GetApp()->GetAppWindow()->getDefaultView().getSize().y / 600.f;
 
     //         // Convert mouse position to grid coordinates
     //         sf::Vector2i GridCoords;
