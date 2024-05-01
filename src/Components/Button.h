@@ -17,7 +17,7 @@ class Button : public BaseComponent
 {
 public:
 
-    static Button* MakeButton(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties);
+    Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties);
 
     // ***===== Lifecycles =====*** //
 
@@ -35,8 +35,4 @@ private:
 
     void UpdateState(const sf::Event& Event);
     // ***===== End Attributes =====*** //
-
-    // ***===== References =====*** //
-
-    std::shared_ptr<sf::RenderWindow> AppWindow;
 };

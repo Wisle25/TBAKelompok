@@ -6,5 +6,5 @@
 class OptionLayout : public BaseComponent
 {
 public:
-    OptionLayout();
+    OptionLayout(BasePage* Page);
 };

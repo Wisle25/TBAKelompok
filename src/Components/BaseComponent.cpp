@@ -2,6 +2,12 @@
 #include "App.h"
 #include "Pages/BasePage.h"
 
+BaseComponent::BaseComponent(BasePage* Page):
+    Application(Page->GetApp())
+{
+
+}
+
 void BaseComponent::draw(sf::RenderTarget& Target, sf::RenderStates States) const
 {
     for (const auto& Shape : Shapes)
@@ -26,4 +32,12 @@ void BaseComponent::MakeText(BasePage* Page, const FMakeText& Properties)
     Text->setPosition(Properties.Position);
 
     Texts.push_back(std::unique_ptr<sf::Text>(std::move(Text)));
+}
+
+sf::Vector2f BaseComponent::CalculateByScreenPercent(const float X, const float Y)
+{
+    return {
+        Application->GetAppWindow()->getSize().x * X / 100.f,
+        Application->GetAppWindow()->getSize().y * Y / 100.f
+    };
 }

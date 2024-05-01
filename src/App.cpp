@@ -15,7 +15,7 @@ void App::InitCore()
 {
     // Window
     AppWindow = std::make_shared<sf::RenderWindow>(sf::VideoMode(1000, 600), "TBA Kelompok", sf::Style::Titlebar | sf::Style::Close);
-    AppWindow->setFramerateLimit(10);
+    AppWindow->setFramerateLimit(200);
     AppWindow->setActive(false);
 
     // Clock

@@ -39,7 +39,7 @@ void BasePage::Draw(sf::RenderTarget* RenderTarget)
 
 Button* BasePage::MakeButton(const FMakeShape& ShapeProperties, const FMakeText& TextProperties)
 {
-    Button* NewButton = Button::MakeButton(this, ShapeProperties, TextProperties);
+    Button* NewButton = new Button(this, ShapeProperties, TextProperties);
 
     AddComponent(NewButton);
 

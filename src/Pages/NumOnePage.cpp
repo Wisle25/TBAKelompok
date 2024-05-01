@@ -1,5 +1,6 @@
 #include "NumOnePage.h"
 #include "Components/OptionLayout.h"
+#include "Components/GridLayout.h"
 
 void NumOnePage::CreateLayout()
 {
@@ -17,6 +18,10 @@ void NumOnePage::CreateLayout()
 
     // *** Layout *** //
 
-    /* Option Layout */
-    // AddComponent(new OptionLayout());
+    AddComponent(new OptionLayout(this));
+    AddComponent(new GridLayout(this, {
+        .Size=SetPositionPercent(70.f, 80.f),
+        .Position=SetPositionPercent(40.f, 50.f),
+        .OutlineThickness=5.f
+    }));
 }

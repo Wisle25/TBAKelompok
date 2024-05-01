@@ -30,16 +30,21 @@ struct FMakeShape
 class BaseComponent : public sf::Drawable
 {
 public:
+    typedef BaseComponent Super;
+
+    BaseComponent(BasePage* Page);
 
     // ***===== Lifecycles =====*** //
     virtual void ReceiveEvent(const sf::Event& Event) {};
     virtual void Tick(const float DeltaTime) {}
     virtual void draw(sf::RenderTarget& Target, sf::RenderStates States) const override;
 
-private:
+protected:
     // ***===== References =====*** //
 
     std::shared_ptr<App> Application;
+
+    sf::Vector2f CalculateByScreenPercent(const float X, const float Y);
 
     // ***===== End References =====*** //
 
@@ -50,7 +55,7 @@ protected:
     std::vector<std::unique_ptr<sf::Text>> Texts;
 
     template <typename Shape>
-    __forceinline void MakeShape(const FMakeShape& Properties)
+    __forceinline Shape* MakeShape(const FMakeShape& Properties)
     {
         Shape* NewShape = new Shape(Properties.Size, Properties.BorderRadius, 8);
         
@@ -61,6 +66,8 @@ protected:
         NewShape->setOutlineThickness(Properties.OutlineThickness); 
 
         Shapes.push_back(std::unique_ptr<Shape>(std::move(NewShape)));
+
+        return NewShape;
     }
 
     void MakeText(BasePage* Page, const FMakeText& Properties);

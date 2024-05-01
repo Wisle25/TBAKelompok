@@ -1,13 +1,13 @@
 #include "Button.h"
+#include "App.h"
 #include "Pages/BasePage.h"
 #include "Shapes/RoundedRectangleShape.h"
 
-Button* Button::MakeButton(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties)
+Button::Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties):
+    Super(Page)
 {
     // Button
-    Button* NewButton = new Button();
-
-    NewButton->MakeShape<sf::RoundedRectangleShape>(ShapeProperties);
+    MakeShape<sf::RoundedRectangleShape>(ShapeProperties);
 
     if (TextProperties.TextString != "")
     {
@@ -16,14 +16,11 @@ Button* Button::MakeButton(BasePage* Page, const FMakeShape& ShapeProperties, co
         FinalTextProperties.Size = TextSize;
         FinalTextProperties.Position = ShapeProperties.Position;
 
-        NewButton->MakeText(Page, FinalTextProperties);
+        MakeText(Page, FinalTextProperties);
     }
 
     // Core
-    NewButton->ButtonProperties = ShapeProperties;
-    NewButton->AppWindow = Page->GetAppWindow();
-
-    return NewButton;
+    ButtonProperties = ShapeProperties;
 }
 
 //////////////////////////////////////////////////////////
@@ -39,7 +36,7 @@ void Button::ReceiveEvent(const sf::Event& Event)
 
 void Button::UpdateState(const sf::Event& Event)
 {
-    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*AppWindow);
+    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*Application->GetAppWindow());
     const sf::Vector2f MousePositionFloat = { static_cast<float>(MousePosition.x), static_cast<float>(MousePosition.y) };
 
     // Pressed
@@ -55,7 +52,7 @@ void Button::UpdateState(const sf::Event& Event)
 
             // Change mouse cursor
             Cursor.loadFromSystem(sf::Cursor::Arrow);
-            AppWindow->setMouseCursor(Cursor);
+            Application->GetAppWindow()->setMouseCursor(Cursor);
         }
     }
     // Clicked
@@ -77,7 +74,7 @@ void Button::UpdateState(const sf::Event& Event)
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Hand);
-        AppWindow->setMouseCursor(Cursor);
+        Application->GetAppWindow()->setMouseCursor(Cursor);
     }
     // None
     else if (State != ButtonState::None)
@@ -88,6 +85,6 @@ void Button::UpdateState(const sf::Event& Event)
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Arrow);
-        AppWindow->setMouseCursor(Cursor);
+        Application->GetAppWindow()->setMouseCursor(Cursor);
     }
 }
