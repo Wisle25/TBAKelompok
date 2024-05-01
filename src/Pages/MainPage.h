@@ -8,15 +8,16 @@ class MainPage : public BasePage
 public:
     typedef BasePage Super;
 
-    MainPage(App* Application);
+protected:
+    // ***===== Layouting =====*** //
+
+    virtual void CreateLayout() override;
 
 private:
     // ***===== Buttons =====*** //
 
-    void CreateButtons();
-
-    void TestBtnOnPressed()
-    {
-        std::cout << "DELEGATE FROM MAIN PAGE!\n";
-    }
+    void NumOneOnPressed();
+    void NumTwoOnPressed();
+    void NumThreeOnPressed();
+    void NumFourOnPressed();
 };

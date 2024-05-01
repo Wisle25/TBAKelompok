@@ -1,6 +1,8 @@
 #include "App.h"
 #include "Pages/MainPage.h"
 
+#include <filesystem>
+
 App::App()
 {
     InitCore();
@@ -18,6 +20,9 @@ void App::InitCore()
 
     // Clock
     Clock = std::make_unique<sf::Clock>();
+
+    // Fonts
+    LoadFonts();
 }
 
 /////////////////////////////////////////////////////////
@@ -48,7 +53,7 @@ void App::PollEvents()
     while (AppWindow->pollEvent(AppEvent))
     {
         if (!Pages.empty())
-            Pages.top()->ReceiveEvent(AppEvent);
+            Pages[CurrentPage]->ReceiveEvent(AppEvent);
 
         switch (AppEvent.type)
         {
@@ -68,7 +73,11 @@ void App::Tick()
     const float DeltaTime = Clock->restart().asSeconds();
 
     if (!Pages.empty())
-        Pages.top()->Tick(DeltaTime);
+    {
+        Pages[CurrentPage]->Tick(DeltaTime);
+    }
+    else
+        AppWindow->close();
 }
 
 void App::DrawThread()
@@ -80,16 +89,34 @@ void App::DrawThread()
         AppWindow->clear();
 
         if (!Pages.empty())
-            Pages.top()->Draw(AppWindow.get());
-        // DrawDebugMouseLocation();
+            Pages[CurrentPage]->Draw(AppWindow.get());
+
         AppWindow->display();
+    }
+}
+
+void App::LoadFonts()
+{
+    namespace fs = std::filesystem;
+
+    std::string Path = "Assets\\Fonts";
+
+    for (const auto& Entry : fs::directory_iterator(Path))
+    {
+        const fs::path    FontFile = Entry.path();
+        const std::string FontName = FontFile.filename().stem().string();
+
+        sf::Font Font;
+        Font.loadFromFile(FontFile.string());
+
+        Fonts.emplace(FontName, Font);
     }
 }
 
 void App::Run()
 {
     // Main Page
-    Pages.push(std::make_unique<MainPage>(this));
+    GoToPage<MainPage>();
 
     // Rendering Thread
     sf::Thread RenderingThread(&App::DrawThread, this);

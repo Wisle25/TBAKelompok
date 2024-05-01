@@ -5,24 +5,6 @@
 
 class BasePage;
 
-struct FMakeButton
-{
-    // Container
-    sf::Vector2f Size;
-    sf::Vector2f Position;
-    sf::Color Color = sf::Color(237, 148, 85);
-    sf::Color HoverColor = sf::Color(255, 187, 112);
-    sf::Color ActiveColor = sf::Color(255, 236, 158);
-    sf::Color OutlineColor = sf::Color::Transparent;
-    float OutlineThickness = 1.f;
-    float BorderRadius = 0.f;
-
-    // Text
-    sf::Color TextColor = sf::Color::Black;
-    std::string FontName = "FiraCode-Regular.ttf";
-    std::string TextString = "";
-};
-
 enum class ButtonState : sf::Uint8 
 {
     None,
@@ -34,10 +16,8 @@ enum class ButtonState : sf::Uint8
 class Button : public BaseComponent
 {
 public:
-    Button() {}
-    virtual ~Button() override {}
 
-    static Button* MakeButton(BasePage* Page, const FMakeButton& Properties);
+    static Button* MakeButton(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties);
 
     // ***===== Lifecycles =====*** //
 
@@ -45,7 +25,7 @@ public:
 
     // ***===== Attributes =====*** //
 
-    FMakeButton ButtonProperties;
+    FMakeShape ButtonProperties;
 
     Delegate<void()> OnPressed;
 

@@ -1,9 +1,16 @@
 #include "BasePage.h"
 #include "App.h"
+#include "Components/Button.h"
 
-BasePage::BasePage(App* Application):
-    AppWindow(Application->GetAppWindow())
+//////////////////////////////////////////////////
+// ================ Lifecycles ================ //
+
+void BasePage::Prepare(std::shared_ptr<App> InApplication)
 {
+    Application = InApplication;
+    AppWindow   = Application->GetAppWindow();
+
+    CreateLayout();
 }
 
 void BasePage::ReceiveEvent(const sf::Event& Event)
@@ -22,4 +29,58 @@ void BasePage::Draw(sf::RenderTarget* RenderTarget)
 {
     for (const auto& Component : Components)
         RenderTarget->draw(*Component);
+
+    for (const auto& Text : Texts)
+        RenderTarget->draw(*Text);
+}
+
+////////////////////////////////////////////////////
+// ================ User Interfaces ================ //
+
+Button* BasePage::MakeButton(const FMakeShape& ShapeProperties, const FMakeText& TextProperties)
+{
+    Button* NewButton = Button::MakeButton(this, ShapeProperties, TextProperties);
+
+    AddComponent(NewButton);
+
+    return NewButton;
+}
+
+void BasePage::AddText(const FMakeText& Properties)
+{
+
+    std::unique_ptr<sf::Text> NewText = std::make_unique<sf::Text>(
+        Properties.TextString,
+        Application->GetFont(Properties.FontName),
+        Properties.Size
+    );
+
+    NewText->setFillColor(Properties.Color);
+    NewText->setOrigin(NewText->getLocalBounds().width / 2.f, NewText->getLocalBounds().height / 1.5f);
+    NewText->setPosition(Properties.Position);
+    NewText->setStyle(Properties.Style);
+
+    Texts.push_back(std::move(NewText));
+}
+
+void BasePage::CreateLayout()
+{
+    // *** Buttons *** //
+
+    Button* BackButton = MakeButton({
+        .Size={ 80.f, 30.f }, 
+        .Position=SetPositionPercent(95.f, 95.f)
+    }, {
+        .TextString="Keluar"
+    });
+
+    BackButton->OnPressed.Bind(this, &BasePage::QuitPage);
+}
+
+////////////////////////////////////////////////////
+// ==================== ?/?? ==================== //
+
+void BasePage::QuitPage()
+{
+    Application->GoBackPage();
 }

@@ -2,33 +2,25 @@
 #include "Pages/BasePage.h"
 #include "Shapes/RoundedRectangleShape.h"
 
-Button* Button::MakeButton(BasePage* Page, const FMakeButton& Properties)
+Button* Button::MakeButton(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties)
 {
-
     // Button
     Button* NewButton = new Button();
-    NewButton->BaseShape = std::make_unique<sf::RoundedRectangleShape>(Properties.Size, Properties.BorderRadius, 8);
-    NewButton->BaseShape->setOrigin(Properties.Size / 2.f);
-    NewButton->BaseShape->setPosition(Properties.Position);
-    NewButton->BaseShape->setFillColor(Properties.Color);
-    NewButton->BaseShape->setOutlineColor(Properties.OutlineColor);
-    NewButton->BaseShape->setOutlineThickness(Properties.OutlineThickness);
 
-    if (Properties.TextString != "")
+    NewButton->MakeShape<sf::RoundedRectangleShape>(ShapeProperties);
+
+    if (TextProperties.TextString != "")
     {
-        NewButton->Font = std::make_unique<sf::Font>();
-        NewButton->Font->loadFromFile("assets/" + Properties.FontName);
+        FMakeText FinalTextProperties = TextProperties;
+        const sf::Uint8 TextSize = ShapeProperties.Size.y / 2.5f;
+        FinalTextProperties.Size = TextSize;
+        FinalTextProperties.Position = ShapeProperties.Position;
 
-        const sf::Uint16 TextSize = Properties.Size.y / 2.5f;
-
-        NewButton->Text = std::make_unique<sf::Text>(Properties.TextString, *NewButton->Font, TextSize);
-        NewButton->Text->setColor(Properties.TextColor);
-        NewButton->Text->setOrigin(NewButton->Text->getLocalBounds().width / 2.f, NewButton->Text->getLocalBounds().height / 1.5f);
-        NewButton->Text->setPosition(Properties.Position);
+        NewButton->MakeText(Page, FinalTextProperties);
     }
 
     // Core
-    NewButton->ButtonProperties = Properties;
+    NewButton->ButtonProperties = ShapeProperties;
     NewButton->AppWindow = Page->GetAppWindow();
 
     return NewButton;
@@ -56,7 +48,15 @@ void Button::UpdateState(const sf::Event& Event)
     )
     {
         State = ButtonState::Pressed;
-        OnPressed.Execute();        
+
+        if (OnPressed.IsBinded())
+        {
+            OnPressed.Execute();
+
+            // Change mouse cursor
+            Cursor.loadFromSystem(sf::Cursor::Arrow);
+            AppWindow->setMouseCursor(Cursor);
+        }
     }
     // Clicked
     else if (State == ButtonState::Hover            &&
@@ -64,16 +64,16 @@ void Button::UpdateState(const sf::Event& Event)
         Event.mouseButton.button == sf::Mouse::Left
     )
     {
-        BaseShape->setFillColor(ButtonProperties.ActiveColor);
+        Shapes[0]->setFillColor(ButtonProperties.ThirdColor);
 
         State = ButtonState::Clicked;
     }
     // Hovered
-    else if (BaseShape->getGlobalBounds().contains(MousePositionFloat))
+    else if (Shapes[0]->getGlobalBounds().contains(MousePositionFloat))
     {
         State = ButtonState::Hover;
 
-        BaseShape->setFillColor(ButtonProperties.HoverColor);
+        Shapes[0]->setFillColor(ButtonProperties.SecondaryColor);
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Hand);
@@ -84,7 +84,7 @@ void Button::UpdateState(const sf::Event& Event)
     {
         State = ButtonState::None;
 
-        BaseShape->setFillColor(ButtonProperties.Color);
+        Shapes[0]->setFillColor(ButtonProperties.Color);
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Arrow);

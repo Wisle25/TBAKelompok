@@ -1,21 +1,51 @@
 #include "MainPage.h"
+#include "App.h"
 #include "Components/Button.h"
+#include "Pages/NumOnePage.h"
 
-MainPage::MainPage(App* Application):
-    Super(Application)
+void MainPage::CreateLayout()
 {
-    CreateButtons();  
+    Name = "MainPage";
+    Super::CreateLayout();
+    
+    // *** Text *** //
+    AddText({
+        .TextString="Tugas Kelompok TBA",
+        .Size=24,
+        .Position=SetPositionPercent(50.f, 5.f),
+        .Style=sf::Text::Style::Bold | sf::Text::Style::Underlined
+    });
+
+    // *** Buttons *** //
+
+    Button* NumOne = MakeButton({
+        .Size={ 280.f, 50.f }, 
+        .Position=SetPositionPercent(50.f, 20.f),
+    }, {
+        .TextString="NFA or e-NFA to DFA"
+    });
+    NumOne->OnPressed.Bind(this, &MainPage::NumOneOnPressed);
 }
 
-void MainPage::CreateButtons()
-{
-    Button* TestBtn = Button::MakeButton(this, {
-        .Size={ 130.f, 60.f }, 
-        .Position=SetPositionPercent(50.f, 10.f),
-        .BorderRadius=8.f,
-        .TextString="Hello!"
-    });
-    TestBtn->OnPressed.Bind(this, &MainPage::TestBtnOnPressed);
+///////////////////////////////////////////////
+// ================ Buttons ================ //
 
-    AddComponent(TestBtn);
+void MainPage::NumOneOnPressed()
+{
+    GetApp()->GoToPage<NumOnePage>();
+}
+
+void MainPage::NumTwoOnPressed()
+{
+    
+}
+
+void MainPage::NumThreeOnPressed()
+{
+    
+}
+
+void MainPage::NumFourOnPressed()
+{
+    
 }

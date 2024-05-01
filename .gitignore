@@ -2,4 +2,4 @@ build
 out
 .cache
 .vscode
-Release
+Debug

@@ -54,6 +54,11 @@ public:
         throw std::bad_function_call();
     }
 
+    const bool IsBinded() const
+    {
+        return delegate;
+    }
+
     ~Delegate() {
         delete delegate;
     }
