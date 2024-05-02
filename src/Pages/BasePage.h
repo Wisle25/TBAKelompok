@@ -18,9 +18,9 @@ public:
 protected:
     // ***==== User Interfaces ====*** //
 
-    __forceinline void AddComponent(BaseComponent* NewComponent)
+    __forceinline void AddComponent(const std::shared_ptr<BaseComponent>& NewComponent)
     {
-        Components.push_back(std::shared_ptr<BaseComponent>(NewComponent));
+        Components.push_back(NewComponent);
     }
     
     void AddText(const FMakeText& Properties);

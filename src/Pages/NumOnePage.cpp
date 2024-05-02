@@ -21,17 +21,18 @@ void NumOnePage::CreateLayout()
     // *** Layout *** //
 
     /** Option Layout */
-    OptionLayout* Option = new OptionLayout(this);
-    Option->GetOption(0)->OnPressed.Bind(this, &NumOnePage::AddOnPlacingAutomataState);
+    std::shared_ptr<OptionLayout> Option = std::make_shared<OptionLayout>(this);
+    Option->GetOption(0)->OnClicked.Bind(this, &NumOnePage::AddOnPlacingAutomataState);
 
     AddComponent(Option);
     
     /** Grid */
-    AddComponent(new GridLayout(this, {
+    const FMakeShape GridShape = {
         .Size=CalculateByScreenPercent(70.f, 80.f),
         .Position=CalculateByScreenPercent(40.f, 50.f),
         .OutlineThickness=5.f
-    }));
+    };
+    AddComponent(std::make_shared<GridLayout>(this, GridShape));
 }
 
 void NumOnePage::Tick(const float DeltaTime)
@@ -46,12 +47,12 @@ void NumOnePage::Tick(const float DeltaTime)
 
 void NumOnePage::MoveAutomata()
 {
-    if (!OnPlacingAutomataState) return;
+    // if (!OnPlacingAutomataState) return;
 
-    OnPlacingAutomataState->SetPosition(GetApp()->GetMousePosition());
+    // OnPlacingAutomataState->SetPosition(GetApp()->GetMousePosition());
 }
 
 void NumOnePage::AddOnPlacingAutomataState()
 {
-    OnPlacingAutomataState  = new AutomataState(this, "Q0", GetApp()->GetMousePosition());
+    // OnPlacingAutomataState  = new AutomataState(this, "Q0", GetApp()->GetMousePosition());
 }

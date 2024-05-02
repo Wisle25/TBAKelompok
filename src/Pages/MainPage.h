@@ -16,8 +16,8 @@ protected:
 private:
     // ***===== Buttons =====*** //
 
-    void NumOneOnPressed();
-    void NumTwoOnPressed();
-    void NumThreeOnPressed();
-    void NumFourOnPressed();
+    void NumOneOnClicked();
+    void NumTwoOnClicked();
+    void NumThreeOnClicked();
+    void NumFourOnClicked();
 };

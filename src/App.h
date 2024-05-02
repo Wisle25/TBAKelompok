@@ -49,9 +49,9 @@ private:
 
     // ***===== Pagination =====*** //
 
-    sf::Uint8 CurrentPage = -1;
+    BasePage* LastPage = nullptr;
 
-    std::stack<std::shared_ptr<BasePage>> Pages;
+    std::stack<BasePage*> Pages;
 
     // const sf::Int16 PageIsExists(BasePage* CheckPage)
     // {
@@ -72,9 +72,10 @@ public:
         T* NewPage = new T();
         NewPage->Prepare(this);
 
+        Pages.push(NewPage);
+
         // sf::Int16 ExistedPage = PageIsExists(NewPage);
 
-        Pages.push(std::shared_ptr<T>(NewPage));
         // if (ExistedPage == -1)
         // {
         //     Pages.push_back(std::shared_ptr<T>(std::move(NewPage)));
@@ -88,6 +89,8 @@ public:
 
     __forceinline void GoBackPage()
     {
+        LastPage = Pages.top();
+
         // --CurrentPage;
         Pages.pop();
     }

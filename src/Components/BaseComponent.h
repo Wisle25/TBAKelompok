@@ -68,7 +68,7 @@ protected:
     std::vector<std::shared_ptr<sf::Text>> Texts;
     std::vector<std::shared_ptr<BaseComponent>> ChildComponents;
 
-    void AddChildComponent(BaseComponent* Child);
+    void AddChildComponent(const std::shared_ptr<BaseComponent>& Child);
     sf::RoundedRectangleShape* MakeRoundedRect(const FMakeShape& Properties);
     sf::CircleShape*           MakeCircle(float Radius, const FMakeShape& Props);
 

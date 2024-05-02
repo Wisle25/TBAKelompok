@@ -20,8 +20,6 @@ void BasePage::ReceiveEvent(const sf::Event& Event)
 
 void BasePage::Tick(const float DeltaTime)
 {
-    std::cout << Name << " is Ticking!\n";
-
     for (const auto& Component : Components)
         Component->Tick(DeltaTime);
 }
@@ -40,10 +38,10 @@ void BasePage::Draw(sf::RenderTarget* RenderTarget)
 
 Button* BasePage::MakeButton(const FMakeShape& ShapeProperties, const FMakeText& TextProperties)
 {
-    Button* NewButton = new Button(this, ShapeProperties, TextProperties);
+    std::shared_ptr<Button> NewButton = std::make_shared<Button>(this, ShapeProperties, TextProperties);
     AddComponent(NewButton);
 
-    return NewButton;
+    return NewButton.get();
 }
 
 void BasePage::AddText(const FMakeText& Properties)
@@ -74,7 +72,7 @@ void BasePage::CreateLayout()
         .TextString="Keluar"
     });
 
-    BackButton->OnPressed.Bind(this, &BasePage::QuitPage);
+    BackButton->OnClicked.Bind(this, &BasePage::QuitPage);
 }
 
 ////////////////////////////////////////////////////

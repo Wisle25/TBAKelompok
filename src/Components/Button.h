@@ -7,8 +7,7 @@ enum class ButtonState : sf::Uint8
 {
     None,
     Hover,
-    Clicked,
-    Pressed
+    Clicked
 };
 
 class Button : public BaseComponent
@@ -27,7 +26,7 @@ public:
 
     FMakeShape ButtonProperties;
 
-    Delegate<void()> OnPressed;
+    Delegate<void()> OnClicked;
 
 private:
     sf::Cursor Cursor;

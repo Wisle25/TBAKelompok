@@ -4,8 +4,8 @@
 #include <filesystem>
 
 App::App():
-    // Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
-    Super(sf::VideoMode(800, 600), "TBA Kelompok")
+    Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
+    // Super(sf::VideoMode(800, 600), "TBA Kelompok")
 {
     // Window   
     setFramerateLimit(175);
@@ -68,8 +68,18 @@ void App::Tick()
 {
     const float DeltaTime = Clock->restart().asSeconds();
 
+    // Handling last page garbage collection
+    if (LastPage)
+    {
+        delete LastPage;
+        LastPage = nullptr;
+    }
+
+    // ...
     if (!Pages.empty())
+    {
         Pages.top()->Tick(DeltaTime);
+    }
     else
         close();
 }

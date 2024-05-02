@@ -12,7 +12,7 @@ OptionLayout::OptionLayout(BasePage* Page):
         .OutlineThickness=5.f,
     });
 
-    AddChildComponent(new AutomataState(
+    AddChildComponent(std::make_shared<AutomataState>(
         Page,
         "State",
         CalculateByScreenPercent(88.f, 30.f))

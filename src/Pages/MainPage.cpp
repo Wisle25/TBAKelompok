@@ -18,34 +18,34 @@ void MainPage::CreateLayout()
 
     // *** Buttons *** //
 
-    Button* NumOne = MakeButton({
+    auto NumOne = MakeButton({
         .Size=CalculateByScreenPercent(28.5f, 6.5f), 
         .Position=CalculateByScreenPercent(50.f, 22.5f),
     }, {
         .TextString="Convert NFA or e-NFA to DFA"
     });
-    NumOne->OnPressed.Bind(this, &MainPage::NumOneOnPressed);
+    NumOne->OnClicked.Bind(this, &MainPage::NumOneOnClicked);
 }
 
 ///////////////////////////////////////////////
 // ================ Buttons ================ //
 
-void MainPage::NumOneOnPressed()
+void MainPage::NumOneOnClicked()
 {
     GetApp()->GoToPage<NumOnePage>();
 }
 
-void MainPage::NumTwoOnPressed()
+void MainPage::NumTwoOnClicked()
 {
     
 }
 
-void MainPage::NumThreeOnPressed()
+void MainPage::NumThreeOnClicked()
 {
     
 }
 
-void MainPage::NumFourOnPressed()
+void MainPage::NumFourOnClicked()
 {
     
 }
