@@ -13,7 +13,7 @@ struct FMakeText
 {
     const std::string& TextString = "";
     const std::string& FontName   = "FiraCode-Regular";
-    sf::Uint8 Size = 12;
+    sf::Uint16 Size = 12;
     sf::Color Color = sf::Color::White;
     sf::Vector2f Position;
     sf::Uint32 Style = sf::Text::Style::Regular;
@@ -39,8 +39,8 @@ public:
     BaseComponent(BasePage* Page);
 
     // ***===== Lifecycles =====*** //
-    virtual void ReceiveEvent(const sf::Event& Event) {};
-    virtual void Tick(const float DeltaTime) {}
+    virtual void ReceiveEvent(const sf::Event& Event);
+    virtual void Tick(const float DeltaTime);
     virtual void draw(sf::RenderTarget& Target, sf::RenderStates States) const override;
 
 protected:
@@ -57,8 +57,11 @@ protected:
     
     std::vector<std::unique_ptr<sf::Shape>> Shapes;
     std::vector<std::unique_ptr<sf::Text>> Texts;
+    std::vector<std::unique_ptr<BaseComponent>> ChildComponents;
 
+    void AddChildComponent(BaseComponent* Child);
     sf::RoundedRectangleShape* MakeRoundedRect(const FMakeShape& Properties);
+    sf::CircleShape*           MakeCircle(float Radius, const FMakeShape& Props);
 
     void MakeText(const FMakeText& Properties);
 };

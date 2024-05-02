@@ -67,8 +67,8 @@ void BasePage::CreateLayout()
     // *** Buttons *** //
 
     Button* BackButton = MakeButton({
-        .Size={ 80.f, 30.f }, 
-        .Position=CalculateByScreenPercent(95.f, 95.f)
+        .Size=CalculateByScreenPercent(8.5f, 4.5f), 
+        .Position=CalculateByScreenPercent(90.f, 95.f)
     }, {
         .TextString="Keluar"
     });
@@ -82,11 +82,10 @@ void BasePage::CreateLayout()
 sf::Vector2f BasePage::CalculateByScreenPercent(const float X, const float Y)
 {
     return {
-        Application->GetAppWindow()->getSize().x * X / 100.f,
-        Application->GetAppWindow()->getSize().y * Y / 100.f
+        Application->getSize().x * X / 100.f,
+        Application->getSize().y * Y / 100.f
     };
 }
-
 
 void BasePage::QuitPage()
 {

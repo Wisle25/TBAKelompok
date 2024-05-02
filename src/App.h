@@ -3,9 +3,11 @@
 #include "Core.h"
 #include "Pages/BasePage.h"
 
-class App
+class App : public sf::RenderWindow
 {
 public:
+    typedef sf::RenderWindow Super;
+
     App();
 
     void Run();
@@ -13,12 +15,10 @@ public:
 private:
     // ***===== Core =====*** //
 
-    std::shared_ptr<sf::RenderWindow> AppWindow;
     std::unique_ptr<sf::Clock> Clock;
     std::map<std::string, sf::Font> Fonts;
     sf::Event AppEvent;
 
-    void InitCore();
     void DrawThread();
     void LoadFonts();
 
@@ -26,10 +26,6 @@ public:
     __forceinline sf::Font& GetFont(const std::string& FontName)
     {
         return Fonts[FontName];
-    }
-    __forceinline std::shared_ptr<sf::RenderWindow> GetAppWindow() const
-    {
-        return AppWindow;
     }
 
     // ***===== End Core =====*** //

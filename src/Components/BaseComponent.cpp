@@ -9,6 +9,18 @@ BaseComponent::BaseComponent(BasePage* Page):
 
 }
 
+void BaseComponent::ReceiveEvent(const sf::Event& Event)
+{
+    for (const auto& Child : ChildComponents)
+        Child->ReceiveEvent(Event);
+}
+
+void BaseComponent::Tick(const float DeltaTime)
+{
+    for (const auto& Child : ChildComponents)    
+        Child->Tick(DeltaTime);
+}
+
 void BaseComponent::draw(sf::RenderTarget& Target, sf::RenderStates States) const
 {
     for (const auto& Shape : Shapes)
@@ -16,6 +28,9 @@ void BaseComponent::draw(sf::RenderTarget& Target, sf::RenderStates States) cons
 
     for (const auto& Text : Texts)
         Target.draw(*Text);
+
+    for (const auto& Child : ChildComponents)
+        Target.draw(*Child);
 }
 
 void BaseComponent::MakeText(const FMakeText& Properties)
@@ -35,9 +50,14 @@ void BaseComponent::MakeText(const FMakeText& Properties)
 sf::Vector2f BaseComponent::CalculateByScreenPercent(const float X, const float Y)
 {
     return {
-        Page->GetApp()->GetAppWindow()->getSize().x * X / 100.f,
-        Page->GetApp()->GetAppWindow()->getSize().y * Y / 100.f
+        Page->GetApp()->getSize().x * X / 100.f,
+        Page->GetApp()->getSize().y * Y / 100.f
     };
+}
+
+void BaseComponent::AddChildComponent(BaseComponent* Child)
+{
+    ChildComponents.push_back(std::unique_ptr<BaseComponent>(std::move(Child)));
 }
 
 sf::RoundedRectangleShape* BaseComponent::MakeRoundedRect(const FMakeShape& Properties)
@@ -53,4 +73,19 @@ sf::RoundedRectangleShape* BaseComponent::MakeRoundedRect(const FMakeShape& Prop
     Shapes.push_back(std::unique_ptr<sf::RoundedRectangleShape>(std::move(NewShape)));
 
     return NewShape;
+}
+
+sf::CircleShape* BaseComponent::MakeCircle(float Radius, const FMakeShape& Props)
+{
+    sf::CircleShape* NewCircle = new sf::CircleShape(Radius);
+
+    NewCircle->setOrigin(NewCircle->getLocalBounds().width / 2.f, NewCircle->getLocalBounds().width / 2.f);
+    NewCircle->setPosition(Props.Position);
+    NewCircle->setFillColor(Props.Color);
+    NewCircle->setOutlineColor(Props.OutlineColor);
+    NewCircle->setOutlineThickness(Props.OutlineThickness); 
+
+    Shapes.push_back(std::unique_ptr<sf::CircleShape>(std::move(NewCircle)));
+
+    return NewCircle;
 }

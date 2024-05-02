@@ -11,7 +11,7 @@ void MainPage::CreateLayout()
     // *** Text *** //
     AddText({
         .TextString="Tugas Kelompok TBA",
-        .Size=24,
+        .Size=static_cast<sf::Uint16>(CalculateByScreenPercent(8.f, 8.f).y),
         .Position=CalculateByScreenPercent(50.f, 5.f),
         .Style=sf::Text::Style::Bold | sf::Text::Style::Underlined
     });
@@ -19,10 +19,10 @@ void MainPage::CreateLayout()
     // *** Buttons *** //
 
     Button* NumOne = MakeButton({
-        .Size={ 280.f, 50.f }, 
+        .Size=CalculateByScreenPercent(28.5f, 6.5f), 
         .Position=CalculateByScreenPercent(50.f, 20.f),
     }, {
-        .TextString="NFA or e-NFA to DFA"
+        .TextString="Convert NFA or e-NFA to DFA"
     });
     NumOne->OnPressed.Bind(this, &MainPage::NumOneOnPressed);
 }

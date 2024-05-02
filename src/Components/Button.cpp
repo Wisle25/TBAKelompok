@@ -35,7 +35,7 @@ void Button::ReceiveEvent(const sf::Event& Event)
 
 void Button::UpdateState(const sf::Event& Event)
 {
-    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*Page->GetApp()->GetAppWindow());
+    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*Page->GetApp());
     const sf::Vector2f MousePositionFloat = { static_cast<float>(MousePosition.x), static_cast<float>(MousePosition.y) };
 
     // Pressed
@@ -51,7 +51,7 @@ void Button::UpdateState(const sf::Event& Event)
 
             // Change mouse cursor
             Cursor.loadFromSystem(sf::Cursor::Arrow);
-            Page->GetApp()->GetAppWindow()->setMouseCursor(Cursor);
+            Page->GetApp()->setMouseCursor(Cursor);
         }
     }
     // Clicked
@@ -73,7 +73,7 @@ void Button::UpdateState(const sf::Event& Event)
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Hand);
-        Page->GetApp()->GetAppWindow()->setMouseCursor(Cursor);
+        Page->GetApp()->setMouseCursor(Cursor);
     }
     // None
     else if (State != ButtonState::None)
@@ -84,6 +84,6 @@ void Button::UpdateState(const sf::Event& Event)
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Arrow);
-        Page->GetApp()->GetAppWindow()->setMouseCursor(Cursor);
+        Page->GetApp()->setMouseCursor(Cursor);
     }
 }

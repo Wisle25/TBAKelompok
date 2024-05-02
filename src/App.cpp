@@ -3,20 +3,12 @@
 
 #include <filesystem>
 
-App::App()
+App::App():
+    Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
 {
-    InitCore();
-}
-
-////////////////////////////////////////////////////
-// ==================== Core ==================== //
-
-void App::InitCore()
-{
-    // Window
-    AppWindow = std::make_shared<sf::RenderWindow>(sf::VideoMode(1000, 600), "TBA Kelompok", sf::Style::Titlebar | sf::Style::Close);
-    AppWindow->setFramerateLimit(200);
-    AppWindow->setActive(false);
+    // Window   
+    setFramerateLimit(200);
+    setActive(false);
 
     // Clock
     Clock = std::make_unique<sf::Clock>();
@@ -35,14 +27,14 @@ void App::DrawDebugMouseLocation()
 
     sf::Text Text;
     char position[50];
-    sprintf(position, "Position: %d, %d", sf::Mouse::getPosition(*AppWindow).x, sf::Mouse::getPosition(*AppWindow).y);
+    sprintf(position, "Position: %d, %d", sf::Mouse::getPosition(*this).x, sf::Mouse::getPosition(*this).y);
     Text.setFont(font);
     Text.setString(position);
     Text.setCharacterSize(8);
     Text.setOrigin(Text.getCharacterSize() / 2, Text.getCharacterSize() / 2);
-    Text.setPosition(sf::Mouse::getPosition(*AppWindow).x, sf::Mouse::getPosition(*AppWindow).y);
+    Text.setPosition(sf::Mouse::getPosition(*this).x, sf::Mouse::getPosition(*this).y);
 
-    AppWindow->draw(Text);
+    draw(Text);
 }
 
 //////////////////////////////////////////////////////////
@@ -50,7 +42,7 @@ void App::DrawDebugMouseLocation()
 
 void App::PollEvents()
 {
-    while (AppWindow->pollEvent(AppEvent))
+    while (pollEvent(AppEvent))
     {
         if (!Pages.empty())
             Pages[CurrentPage]->ReceiveEvent(AppEvent);
@@ -58,7 +50,7 @@ void App::PollEvents()
         switch (AppEvent.type)
         {
         case sf::Event::Closed:
-            AppWindow->close();
+            close();
             break;
 
         default:
@@ -77,21 +69,21 @@ void App::Tick()
         Pages[CurrentPage]->Tick(DeltaTime);
     }
     else
-        AppWindow->close();
+        close();
 }
 
 void App::DrawThread()
 {
-    AppWindow->setActive(true);
+    setActive(true);
 
-    while (AppWindow->isOpen())
+    while (isOpen())
     {
-        AppWindow->clear();
+        clear();
 
         if (!Pages.empty())
-            Pages[CurrentPage]->Draw(AppWindow.get());
+            Pages[CurrentPage]->Draw(this);
 
-        AppWindow->display();
+        display();
     }
 }
 
@@ -122,7 +114,7 @@ void App::Run()
     sf::Thread RenderingThread(&App::DrawThread, this);
     RenderingThread.launch();
 
-    while (AppWindow->isOpen())    
+    while (isOpen())    
     {
         PollEvents();
         Tick();
