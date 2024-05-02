@@ -2,12 +2,13 @@
 
 #include "Core.h"
 
+class App;
+class BasePage;
+
 namespace sf
 {
 class RoundedRectangleShape;
 }
-
-class BasePage;
 
 struct FMakeText
 {
@@ -26,8 +27,10 @@ struct FMakeShape
     sf::Color Color = COLOR;
     sf::Color SecondaryColor = SECONDARY_COLOR;
     sf::Color ThirdColor     = THIRD_COLOR;
-    sf::Color OutlineColor = sf::Color::Transparent;
-    float OutlineThickness = 1.f;
+    sf::Color OutlineColor = COLOR;
+    sf::Color OutlineSecondaryColor = SECONDARY_COLOR;
+    sf::Color OutlineThirdColor = THIRD_COLOR;
+    float OutlineThickness = 0.f;
     float BorderRadius = 5.f;
 };
 
@@ -46,22 +49,31 @@ public:
 protected:
     // ***===== References =====*** //
 
-    std::shared_ptr<BasePage> Page;
+    BasePage* Page;
 
     sf::Vector2f CalculateByScreenPercent(const float X, const float Y);
+    
+    __forceinline sf::Uint16 CalculateTextScreenPercent(float Size)
+    {
+        return static_cast<sf::Uint16>(CalculateByScreenPercent(Size, Size).y);
+    }
+    App* GetApp() const;
 
     // ***===== End References =====*** //
 
 protected:
     // ***===== SFML =====*** //
     
-    std::vector<std::unique_ptr<sf::Shape>> Shapes;
-    std::vector<std::unique_ptr<sf::Text>> Texts;
-    std::vector<std::unique_ptr<BaseComponent>> ChildComponents;
+    std::vector<std::shared_ptr<sf::Shape>> Shapes;
+    std::vector<std::shared_ptr<sf::Text>> Texts;
+    std::vector<std::shared_ptr<BaseComponent>> ChildComponents;
 
     void AddChildComponent(BaseComponent* Child);
     sf::RoundedRectangleShape* MakeRoundedRect(const FMakeShape& Properties);
     sf::CircleShape*           MakeCircle(float Radius, const FMakeShape& Props);
 
     void MakeText(const FMakeText& Properties);
+
+public:
+    void SetPosition(const sf::Vector2f& Position);
 };

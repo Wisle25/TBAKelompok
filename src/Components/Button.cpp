@@ -1,6 +1,5 @@
 #include "Button.h"
 #include "App.h"
-#include "Pages/BasePage.h"
 
 Button::Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties):
     Super(Page)
@@ -35,9 +34,6 @@ void Button::ReceiveEvent(const sf::Event& Event)
 
 void Button::UpdateState(const sf::Event& Event)
 {
-    const sf::Vector2i MousePosition = sf::Mouse::getPosition(*Page->GetApp());
-    const sf::Vector2f MousePositionFloat = { static_cast<float>(MousePosition.x), static_cast<float>(MousePosition.y) };
-
     // Pressed
     if (State == ButtonState::Clicked                &&
         Event.type == sf::Event::MouseButtonReleased
@@ -45,13 +41,19 @@ void Button::UpdateState(const sf::Event& Event)
     {
         State = ButtonState::Pressed;
 
+        Shapes[0]->setFillColor(ButtonProperties.Color);
+        if (ButtonProperties.OutlineThickness > 0.f)
+        {
+            Shapes[0]->setOutlineColor(ButtonProperties.Color);
+        }
+
         if (OnPressed.IsBinded())
         {
             OnPressed.Execute();
 
             // Change mouse cursor
             Cursor.loadFromSystem(sf::Cursor::Arrow);
-            Page->GetApp()->setMouseCursor(Cursor);
+            GetApp()->setMouseCursor(Cursor);
         }
     }
     // Clicked
@@ -61,19 +63,28 @@ void Button::UpdateState(const sf::Event& Event)
     )
     {
         Shapes[0]->setFillColor(ButtonProperties.ThirdColor);
+        if (ButtonProperties.OutlineThickness > 0.f)
+        {
+            Shapes[0]->setOutlineColor(ButtonProperties.OutlineThirdColor);
+        }
 
         State = ButtonState::Clicked;
     }
     // Hovered
-    else if (Shapes[0]->getGlobalBounds().contains(MousePositionFloat))
+    else if (Shapes[0]->getGlobalBounds().contains(GetApp()->GetMousePosition()))
     {
         State = ButtonState::Hover;
 
         Shapes[0]->setFillColor(ButtonProperties.SecondaryColor);
 
+        if (ButtonProperties.OutlineThickness > 0.f)
+        {
+            Shapes[0]->setOutlineColor(ButtonProperties.OutlineSecondaryColor);
+        }
+
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Hand);
-        Page->GetApp()->setMouseCursor(Cursor);
+        GetApp()->setMouseCursor(Cursor);
     }
     // None
     else if (State != ButtonState::None)
@@ -81,9 +92,13 @@ void Button::UpdateState(const sf::Event& Event)
         State = ButtonState::None;
 
         Shapes[0]->setFillColor(ButtonProperties.Color);
+        if (ButtonProperties.OutlineThickness > 0.f)
+        {
+            Shapes[0]->setOutlineColor(ButtonProperties.OutlineColor);
+        }
 
         // Change mouse cursor
         Cursor.loadFromSystem(sf::Cursor::Arrow);
-        Page->GetApp()->setMouseCursor(Cursor);
+        GetApp()->setMouseCursor(Cursor);
     }
 }

@@ -4,10 +4,11 @@
 #include <filesystem>
 
 App::App():
-    Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
+    // Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
+    Super(sf::VideoMode(800, 600), "TBA Kelompok")
 {
     // Window   
-    setFramerateLimit(200);
+    setFramerateLimit(175);
     setActive(false);
 
     // Clock
@@ -44,8 +45,11 @@ void App::PollEvents()
 {
     while (pollEvent(AppEvent))
     {
+        const sf::Vector2i MousePositionInt = sf::Mouse::getPosition(*this);
+        MousePosition = { static_cast<float>(MousePositionInt.x), static_cast<float>(MousePositionInt.y) };
+
         if (!Pages.empty())
-            Pages[CurrentPage]->ReceiveEvent(AppEvent);
+            Pages.top()->ReceiveEvent(AppEvent);
 
         switch (AppEvent.type)
         {
@@ -65,9 +69,7 @@ void App::Tick()
     const float DeltaTime = Clock->restart().asSeconds();
 
     if (!Pages.empty())
-    {
-        Pages[CurrentPage]->Tick(DeltaTime);
-    }
+        Pages.top()->Tick(DeltaTime);
     else
         close();
 }
@@ -81,7 +83,7 @@ void App::DrawThread()
         clear();
 
         if (!Pages.empty())
-            Pages[CurrentPage]->Draw(this);
+            Pages.top()->Draw(this);
 
         display();
     }
@@ -109,7 +111,7 @@ void App::Run()
 {
     // Main Page
     GoToPage<MainPage>();
-
+    
     // Rendering Thread
     sf::Thread RenderingThread(&App::DrawThread, this);
     RenderingThread.launch();

@@ -37,27 +37,32 @@ void BaseComponent::MakeText(const FMakeText& Properties)
 {
     sf::Text* Text = new sf::Text(
         Properties.TextString,
-        Page->GetApp()->GetFont(Properties.FontName),
+        GetApp()->GetFont(Properties.FontName),
         Properties.Size
     );
     Text->setColor(Properties.Color);
     Text->setOrigin(Text->getLocalBounds().width / 2.f, Text->getLocalBounds().height / 1.25f);
     Text->setPosition(Properties.Position);
 
-    Texts.push_back(std::unique_ptr<sf::Text>(std::move(Text)));
+    Texts.push_back(std::shared_ptr<sf::Text>(Text));
 }
 
 sf::Vector2f BaseComponent::CalculateByScreenPercent(const float X, const float Y)
 {
     return {
-        Page->GetApp()->getSize().x * X / 100.f,
-        Page->GetApp()->getSize().y * Y / 100.f
+        GetApp()->getSize().x * X / 100.f,
+        GetApp()->getSize().y * Y / 100.f
     };
+}
+
+App* BaseComponent::GetApp() const
+{
+    return Page->GetApp();
 }
 
 void BaseComponent::AddChildComponent(BaseComponent* Child)
 {
-    ChildComponents.push_back(std::unique_ptr<BaseComponent>(std::move(Child)));
+    ChildComponents.push_back(std::shared_ptr<BaseComponent>(Child));
 }
 
 sf::RoundedRectangleShape* BaseComponent::MakeRoundedRect(const FMakeShape& Properties)
@@ -70,14 +75,15 @@ sf::RoundedRectangleShape* BaseComponent::MakeRoundedRect(const FMakeShape& Prop
     NewShape->setOutlineColor(Properties.OutlineColor);
     NewShape->setOutlineThickness(Properties.OutlineThickness); 
 
-    Shapes.push_back(std::unique_ptr<sf::RoundedRectangleShape>(std::move(NewShape)));
+    Shapes.push_back(std::shared_ptr<sf::RoundedRectangleShape>(NewShape));
 
     return NewShape;
 }
 
 sf::CircleShape* BaseComponent::MakeCircle(float Radius, const FMakeShape& Props)
 {
-    sf::CircleShape* NewCircle = new sf::CircleShape(Radius);
+    float ResposiveRadius = CalculateByScreenPercent(Radius, Radius).y;
+    sf::CircleShape* NewCircle = new sf::CircleShape(ResposiveRadius);
 
     NewCircle->setOrigin(NewCircle->getLocalBounds().width / 2.f, NewCircle->getLocalBounds().width / 2.f);
     NewCircle->setPosition(Props.Position);
@@ -85,7 +91,13 @@ sf::CircleShape* BaseComponent::MakeCircle(float Radius, const FMakeShape& Props
     NewCircle->setOutlineColor(Props.OutlineColor);
     NewCircle->setOutlineThickness(Props.OutlineThickness); 
 
-    Shapes.push_back(std::unique_ptr<sf::CircleShape>(std::move(NewCircle)));
+    Shapes.push_back(std::shared_ptr<sf::CircleShape>(NewCircle));
 
     return NewCircle;
+}
+
+void BaseComponent::SetPosition(const sf::Vector2f& Position)
+{
+    Shapes[0]->setPosition(Position);
+    Texts [0]->setPosition(Position);
 }

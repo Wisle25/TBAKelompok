@@ -15,6 +15,8 @@ class Button : public BaseComponent
 {
 public:
 
+    Button(BasePage* Page):
+        Super(Page) {}
     Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeText& TextProperties);
 
     // ***===== Lifecycles =====*** //

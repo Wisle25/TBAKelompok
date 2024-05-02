@@ -3,7 +3,6 @@
 #include "Core.h"
 #include "Components/BaseComponent.h"
 
-class App;
 class Button;
 
 class BasePage
@@ -11,39 +10,44 @@ class BasePage
 
 public:
     // ***==== Lifecycles ====*** //
-    void Prepare(std::shared_ptr<App> InApplication);
-    void ReceiveEvent(const sf::Event& Event);
-    void Tick(const float DeltaTime);
-    void Draw(sf::RenderTarget* RenderTarget);
+    virtual void Prepare(App* InApplication);
+    virtual void ReceiveEvent(const sf::Event& Event);
+    virtual void Tick(const float DeltaTime);
+    virtual void Draw(sf::RenderTarget* RenderTarget);
 
 protected:
     // ***==== User Interfaces ====*** //
 
     __forceinline void AddComponent(BaseComponent* NewComponent)
     {
-        Components.push_back(std::unique_ptr<BaseComponent>(std::move(NewComponent)));
+        Components.push_back(std::shared_ptr<BaseComponent>(NewComponent));
     }
     
     void AddText(const FMakeText& Properties);
 
     sf::Vector2f CalculateByScreenPercent(const float X, const float Y);
+    __forceinline sf::Uint16 CalculateTextScreenPercent(float Size)
+    {
+        return static_cast<sf::Uint16>(CalculateByScreenPercent(Size, Size).y);
+    }
+
     Button* MakeButton(const FMakeShape& ShapeProperties, const FMakeText& TextProperties);
 
     virtual void CreateLayout();
 
-private:
-    std::vector<std::unique_ptr<BaseComponent>> Components;
-    std::vector<std::unique_ptr<sf::Text>> Texts;
+protected:
+    std::vector<std::shared_ptr<BaseComponent>> Components;
+    std::vector<std::shared_ptr<sf::Text>> Texts;
 
     // ***===== Core References =====*** //
 
-    std::shared_ptr<App> Application;
+    App* Application;
 
 protected:
     std::string Name = "Bass";
 
 public:
-    __forceinline std::shared_ptr<App> GetApp() const
+    __forceinline App* GetApp() const
     {
         return Application;
     }

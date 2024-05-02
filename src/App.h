@@ -19,6 +19,8 @@ private:
     std::map<std::string, sf::Font> Fonts;
     sf::Event AppEvent;
 
+    sf::Vector2f MousePosition;
+
     void DrawThread();
     void LoadFonts();
 
@@ -26,6 +28,10 @@ public:
     __forceinline sf::Font& GetFont(const std::string& FontName)
     {
         return Fonts[FontName];
+    }
+    __forceinline sf::Vector2f GetMousePosition() const
+    {
+        return MousePosition;
     }
 
     // ***===== End Core =====*** //
@@ -45,18 +51,18 @@ private:
 
     sf::Uint8 CurrentPage = -1;
 
-    std::vector<std::unique_ptr<BasePage>> Pages;
+    std::stack<std::shared_ptr<BasePage>> Pages;
 
-    const sf::Int16 PageIsExists(BasePage* CheckPage)
-    {
-        for (sf::Int16 I = 0; I < Pages.size(); ++I)
-        {   
-            if (Pages[I]->GetName() == CheckPage->GetName())
-                return I;
-        }
+    // const sf::Int16 PageIsExists(BasePage* CheckPage)
+    // {
+    //     for (sf::Int16 I = 0; I < Pages.size(); ++I)
+    //     {   
+    //         if (Pages[I]->GetName() == CheckPage->GetName())
+    //             return I;
+    //     }
 
-        return -1;
-    }
+    //     return -1;
+    // }
 
 public:
     /** NOTE: This is still a naive approach, gonna fix this later */
@@ -64,24 +70,25 @@ public:
     __forceinline void GoToPage()
     {
         T* NewPage = new T();
-        NewPage->Prepare(std::shared_ptr<App>(this));
+        NewPage->Prepare(this);
 
-        sf::Int16 ExistedPage = PageIsExists(NewPage);
+        // sf::Int16 ExistedPage = PageIsExists(NewPage);
 
-        if (ExistedPage == -1)
-        {
-            Pages.push_back(std::unique_ptr<T>(std::move(NewPage)));
-            ++CurrentPage;
-        }
-        else
-        {
-            CurrentPage = ExistedPage;
-        }
+        Pages.push(std::shared_ptr<T>(NewPage));
+        // if (ExistedPage == -1)
+        // {
+        //     Pages.push_back(std::shared_ptr<T>(std::move(NewPage)));
+        //     ++CurrentPage;
+        // }
+        // else
+        // {
+        //     CurrentPage = ExistedPage;
+        // }
     }
 
     __forceinline void GoBackPage()
     {
-        --CurrentPage;
-        // Pages.pop_back();
+        // --CurrentPage;
+        Pages.pop();
     }
 };

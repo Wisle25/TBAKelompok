@@ -1,5 +1,5 @@
 #include "Components/OptionLayout.h"
-#include "Automata/State.h"
+#include "Automata/AutomataState.h"
 
 OptionLayout::OptionLayout(BasePage* Page):
     Super(Page)
@@ -12,5 +12,14 @@ OptionLayout::OptionLayout(BasePage* Page):
         .OutlineThickness=5.f,
     });
 
-    AddChildComponent(new State(Page, "State", CalculateByScreenPercent(88.f, 30.f)));
+    AddChildComponent(new AutomataState(
+        Page,
+        "State",
+        CalculateByScreenPercent(88.f, 30.f))
+    );
+}
+
+Button* OptionLayout::GetOption(int Index) const
+{
+    return dynamic_cast<Button*>(ChildComponents[Index].get());
 }

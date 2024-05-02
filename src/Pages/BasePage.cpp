@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////
 // ================ Lifecycles ================ //
 
-void BasePage::Prepare(std::shared_ptr<App> InApplication)
+void BasePage::Prepare(App* InApplication)
 {
     Application = InApplication;
 
@@ -20,6 +20,8 @@ void BasePage::ReceiveEvent(const sf::Event& Event)
 
 void BasePage::Tick(const float DeltaTime)
 {
+    std::cout << Name << " is Ticking!\n";
+
     for (const auto& Component : Components)
         Component->Tick(DeltaTime);
 }
@@ -39,7 +41,6 @@ void BasePage::Draw(sf::RenderTarget* RenderTarget)
 Button* BasePage::MakeButton(const FMakeShape& ShapeProperties, const FMakeText& TextProperties)
 {
     Button* NewButton = new Button(this, ShapeProperties, TextProperties);
-
     AddComponent(NewButton);
 
     return NewButton;
@@ -48,7 +49,7 @@ Button* BasePage::MakeButton(const FMakeShape& ShapeProperties, const FMakeText&
 void BasePage::AddText(const FMakeText& Properties)
 {
 
-    std::unique_ptr<sf::Text> NewText = std::make_unique<sf::Text>(
+    std::shared_ptr<sf::Text> NewText = std::make_shared<sf::Text>(
         Properties.TextString,
         Application->GetFont(Properties.FontName),
         Properties.Size
@@ -59,7 +60,7 @@ void BasePage::AddText(const FMakeText& Properties)
     NewText->setPosition(Properties.Position);
     NewText->setStyle(Properties.Style);
 
-    Texts.push_back(std::move(NewText));
+    Texts.push_back(NewText);
 }
 
 void BasePage::CreateLayout()
