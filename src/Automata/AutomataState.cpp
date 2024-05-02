@@ -1,15 +1,26 @@
 #include "Automata/AutomataState.h"
+#include "App.h"
 
-AutomataState::AutomataState(BasePage* Page, const std::string& Name, const sf::Vector2f& Position):
+AutomataState::AutomataState(BasePage* Page, const std::string& Name, const sf::Vector2f& Position, bool& bInOnReceivingTransition, bool bRandomizeColor):
     Super(Page),
-    StateName(Name)
+    StateName(Name),
+    bOnReceivingTransition(bInOnReceivingTransition)
 {
+    if (bRandomizeColor)
+    {
+        uint8_t Red   = App::RandRange(0, 255);
+        uint8_t Green = App::RandRange(0, 255);
+        uint8_t Blue  = App::RandRange(0, 255);
+
+        Color = sf::Color(Red, Green, Blue);
+    }
+
     ButtonProperties = {
         .Position=Position,
         .Color=sf::Color::Transparent,
         .SecondaryColor=sf::Color::Transparent,
         .ThirdColor=sf::Color::Transparent,
-        .OutlineColor=COLOR,
+        .OutlineColor=Color,
         .OutlineThickness=5.f
     };
 
@@ -20,8 +31,27 @@ AutomataState::AutomataState(BasePage* Page, const std::string& Name, const sf::
     MakeText({
         .TextString=StateName,
         .Size=CalculateTextScreenPercent(1.5f),
-        .Color=COLOR,
+        .Color=Color,
         .Position=Position,
         .Style=sf::Text::Bold
     });
+}
+
+//////////////////////////////////////////////////////////
+// ==================== Lifecycles ==================== //
+
+void AutomataState::ReceiveEvent(const sf::Event& Event)
+{
+    Super::ReceiveEvent(Event);
+
+    if (State != ButtonState::Clicked) return;
+
+    if (bOnReceivingTransition && OnReceivingTransition.IsBinded())
+    {
+        OnReceivingTransition.Execute(this);
+    }
+    else if (bPlaced && OnAddTransition.IsBinded())
+    {
+        OnAddTransition.Execute(this);
+    }
 }

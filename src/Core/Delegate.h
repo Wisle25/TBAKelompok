@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <stdexcept>
 
 template<typename... Args>
 class Delegate;
@@ -56,7 +57,7 @@ public:
 
     const bool IsBinded() const
     {
-        return delegate;
+        return dynamic_cast<BaseDelegate*>(delegate) != nullptr;
     }
 
     ~Delegate() {

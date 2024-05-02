@@ -10,5 +10,5 @@ class OptionLayout : public BaseComponent
 public:
     OptionLayout(BasePage* Page);
 
-    Button* GetOption(int Index) const;
+    Button* GetOption(int32_t Index) const;
 };

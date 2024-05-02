@@ -53,17 +53,6 @@ private:
 
     std::stack<BasePage*> Pages;
 
-    // const sf::Int16 PageIsExists(BasePage* CheckPage)
-    // {
-    //     for (sf::Int16 I = 0; I < Pages.size(); ++I)
-    //     {   
-    //         if (Pages[I]->GetName() == CheckPage->GetName())
-    //             return I;
-    //     }
-
-    //     return -1;
-    // }
-
 public:
     /** NOTE: This is still a naive approach, gonna fix this later */
     template <typename T>
@@ -73,18 +62,6 @@ public:
         NewPage->Prepare(this);
 
         Pages.push(NewPage);
-
-        // sf::Int16 ExistedPage = PageIsExists(NewPage);
-
-        // if (ExistedPage == -1)
-        // {
-        //     Pages.push_back(std::shared_ptr<T>(std::move(NewPage)));
-        //     ++CurrentPage;
-        // }
-        // else
-        // {
-        //     CurrentPage = ExistedPage;
-        // }
     }
 
     __forceinline void GoBackPage()
@@ -93,5 +70,18 @@ public:
 
         // --CurrentPage;
         Pages.pop();
+    }
+    // ***===== End Pagination =====*** //
+
+    // ***===== Randomizer =====*** //
+
+    static int32_t RandRange(int32_t Min, int32_t Max)
+    {
+        std::random_device Rd;
+        std::mt19937 Gen(Rd());
+
+        std::uniform_int_distribution<> Dis(Min, Max);
+
+        return Dis(Gen);
     }
 };

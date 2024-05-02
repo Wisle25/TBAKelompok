@@ -1,6 +1,6 @@
 #include "GridLayout.h"
 #include "Shapes/RoundedRectangleShape.h"
-// #include "App.h"
+#include "App.h"
 // #include "Pages/BasePage.h"
 
 GridLayout::GridLayout(BasePage* Page, const FMakeShape& ShapeProps):
@@ -21,15 +21,15 @@ GridLayout::GridLayout(BasePage* Page, const FMakeShape& ShapeProps):
 
 void GridLayout::GenerateGrid()
 {
-    const sf::Uint32 MaxX = Props.Size.x / GridSize;
-    const sf::Uint32 MaxY = Props.Size.y / GridSize;
+    const uint32_t MaxX = Props.Size.x / GridSize;
+    const uint32_t MaxY = Props.Size.y / GridSize;
     StartedPosition = Props.Position - Shapes[0]->getOrigin() + sf::Vector2f(Props.OutlineThickness, Props.OutlineThickness);
 
     Grid.resize(MaxX);
-    for (sf::Uint32 X = 0; X < MaxX; ++X)
+    for (uint32_t X = 0; X < MaxX; ++X)
     {
         Grid[X].resize(MaxY);
-        for (sf::Uint32 Y = 0; Y < MaxY; ++Y)
+        for (uint32_t Y = 0; Y < MaxY; ++Y)
         {
             sf::Vector2f CurrentPosition = sf::Vector2f(X, Y) * GridSize + StartedPosition;
 
@@ -38,7 +38,7 @@ void GridLayout::GenerateGrid()
                 .Position=CurrentPosition,
                 .Color=sf::Color::Transparent,
                 .OutlineColor=sf::Color::Transparent,
-                .OutlineThickness=1.f,
+                .OutlineThickness=.5f,
                 .BorderRadius=0.f
             });
 
@@ -46,6 +46,45 @@ void GridLayout::GenerateGrid()
             Grid[X][Y] = NewCell;
         }
     }
+}
+
+sf::Vector2i GridLayout::GetGridCords(const sf::Vector2f& Position)
+{
+    sf::Vector2f ScreenPercent = CalculateByScreenPercent(1.f, 1.f);
+    sf::Vector2f GridPosition;
+
+    GridPosition.x = Position.x * GetApp()->getDefaultView().getSize().x / GetApp()->getSize().x/* + ScreenPercent.x */;
+    GridPosition.y = Position.y * GetApp()->getDefaultView().getSize().y / GetApp()->getSize().y/* + ScreenPercent.y */;
+
+    // Convert world position to grid coordinates
+    sf::Vector2i GridCoords;
+    GridCoords.x = static_cast<int32_t>((GridPosition.x - StartedPosition.x) / GridSize);
+    GridCoords.y = static_cast<int32_t>((GridPosition.y - StartedPosition.y) / GridSize);
+
+    return GridCoords;
+}
+
+void GridLayout::MakeCellsAsObstacle(const sf::Vector2f& Position, const int32_t Radius)
+{
+    const sf::Vector2i GridCords = GetGridCords(Position);
+
+    int16_t MinX = GridCords.x - Radius;
+    int16_t MaxX = GridCords.x + Radius;
+    int16_t MinY = GridCords.y - Radius;
+    int16_t MaxY = GridCords.y + Radius;
+
+    for (int16_t X = MinX; X < MaxX; ++X)
+    {
+        for (int16_t Y = MinY; Y < MaxY; ++Y)
+        {
+            Grid[X][Y].IsObstacle = true;
+        }
+    }
+}
+
+const bool GridLayout::IsInBounds() const
+{
+    return Shapes[0]->getGlobalBounds().contains(GetApp()->GetMousePosition());
 }
 
 //////////////////////////////////////////////////////////
@@ -65,8 +104,8 @@ void GridLayout::ReceiveEvent(const sf::Event& Event)
 
     //         // Convert mouse position to grid coordinates
     //         sf::Vector2i GridCoords;
-    //         GridCoords.x = static_cast<int>((WorldMousePosition.x - StartedPosition.x) / GridSize);
-    //         GridCoords.y = static_cast<int>((WorldMousePosition.y - StartedPosition.y) / GridSize);
+    //         GridCoords.x = static_cast<int32_t>((WorldMousePosition.x - StartedPosition.x) / GridSize);
+    //         GridCoords.y = static_cast<int32_t>((WorldMousePosition.y - StartedPosition.y) / GridSize);
 
     //         if (Event.mouseButton.button == sf::Mouse::Left)
     //         {
@@ -121,7 +160,7 @@ void GridLayout::ReceiveEvent(const sf::Event& Event)
     //         }
 
     //         break;
-    //     }
+    //     }    
 
     //     default:
     //         break;
@@ -131,10 +170,18 @@ void GridLayout::ReceiveEvent(const sf::Event& Event)
 //////////////////////////////////////////////////////////////
 // ==================== A* Pathfinding ==================== //
 
-std::vector<GridLayout::Cell*> GridLayout::AStar(std::vector<std::vector<Cell>>& Grid, const sf::Vector2i& StartIdx, const sf::Vector2i& GoalIdx) 
+void GridLayout::ColorizeTransition(const std::vector<Cell*>& Path)
 {
-    int Rows = Grid.size();
-    int Cols = Grid[0].size();
+    for (const auto& Cell : Path)
+    {
+        Cell->Shape->setFillColor(PathColor);
+    }
+}
+
+void GridLayout::VisualizeTransition() 
+{
+    int32_t Rows = Grid.size();
+    int32_t Cols = Grid[0].size();
 
     // Priority queue to store open cells
     std::priority_queue<Cell*, std::vector<Cell*>, decltype(&CompareCells)> Open(&CompareCells);
@@ -142,11 +189,11 @@ std::vector<GridLayout::Cell*> GridLayout::AStar(std::vector<std::vector<Cell>>&
     std::unordered_map<std::string, Cell*> CameFrom;
 
     // Initialize start cell
-    Cell* StartCell = &Grid[StartIdx.x][StartIdx.y];
+    Cell* StartCell = &Grid[Start.x][Start.y];
     StartCell->Cost = 0;
-    StartCell->Heuristic = Heuristic(StartCell->Position, Grid[GoalIdx.x][GoalIdx.y].Position);
+    StartCell->Heuristic = Heuristic(StartCell->Position, Grid[Goal.x][Goal.y].Position);
     Open.push(StartCell);
-    Cost[std::to_string(StartIdx.x) + "," + std::to_string(StartIdx.y)] = 0;
+    Cost[std::to_string(Start.x) + "," + std::to_string(Start.y)] = 0;
 
     while (!Open.empty()) 
     {
@@ -155,7 +202,7 @@ std::vector<GridLayout::Cell*> GridLayout::AStar(std::vector<std::vector<Cell>>&
         Open.pop();
 
         // Check if the goal cell is reached
-        if (Current->Position == Grid[GoalIdx.x][GoalIdx.y].Position) 
+        if (Current->Position == Grid[Goal.x][Goal.y].Position) 
         {
             // Reconstruct the path
             std::vector<Cell*> Path;
@@ -166,19 +213,21 @@ std::vector<GridLayout::Cell*> GridLayout::AStar(std::vector<std::vector<Cell>>&
             }
             std::reverse(Path.begin(), Path.end());
             
-            return Path;
+            ColorizeTransition(Path);
+
+            break;
         }
 
         // Expand current cell
-        int X = Current->GridPosition.x;
-        int Y = Current->GridPosition.y;
+        int32_t X = Current->GridPosition.x;
+        int32_t Y = Current->GridPosition.y;
 
         std::vector<sf::Vector2i> Neighbors = {{X - 1, Y}, {X + 1, Y}, {X, Y - 1}, {X, Y + 1}};
         
         for (const auto& Neighbor : Neighbors) 
         {
-            int NX = Neighbor.x;
-            int NY = Neighbor.y;
+            int32_t NX = Neighbor.x;
+            int32_t NY = Neighbor.y;
             
             if (NX >= 0 && NX < Rows && NY >= 0 && NY < Cols && !Grid[NX][NY].IsObstacle) 
             {
@@ -189,14 +238,11 @@ std::vector<GridLayout::Cell*> GridLayout::AStar(std::vector<std::vector<Cell>>&
                 {
                     Cost[std::to_string(NX) + "," + std::to_string(NY)] = NewCost;
                     NextCell->Cost = NewCost;
-                    NextCell->Heuristic = Heuristic(NextCell->Position, Grid[GoalIdx.x][GoalIdx.y].Position);
+                    NextCell->Heuristic = Heuristic(NextCell->Position, Grid[Goal.x][Goal.y].Position);
                     Open.push(NextCell);
                     CameFrom[std::to_string(NX) + "," + std::to_string(NY)] = Current;
                 }
             }
         }
     }
-
-    // No path found
-    return {};
 }

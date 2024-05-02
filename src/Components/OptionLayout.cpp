@@ -12,14 +12,16 @@ OptionLayout::OptionLayout(BasePage* Page):
         .OutlineThickness=5.f,
     });
 
+    bool None = false;
     AddChildComponent(std::make_shared<AutomataState>(
         Page,
         "State",
-        CalculateByScreenPercent(88.f, 30.f))
-    );
+        CalculateByScreenPercent(88.f, 30.f),
+        None
+    ));
 }
 
-Button* OptionLayout::GetOption(int Index) const
+Button* OptionLayout::GetOption(int32_t Index) const
 {
     return dynamic_cast<Button*>(ChildComponents[Index].get());
 }

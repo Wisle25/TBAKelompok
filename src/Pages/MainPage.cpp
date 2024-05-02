@@ -11,14 +11,14 @@ void MainPage::CreateLayout()
     // *** Text *** //
     AddText({
         .TextString="Tugas Kelompok TBA",
-        .Size=static_cast<sf::Uint16>(CalculateByScreenPercent(8.f, 8.f).y),
+        .Size=static_cast<uint16_t>(CalculateByScreenPercent(8.f, 8.f).y),
         .Position=CalculateByScreenPercent(50.f, 8.f),
         .Style=sf::Text::Style::Bold | sf::Text::Style::Underlined
     });
 
     // *** Buttons *** //
 
-    auto NumOne = MakeButton({
+    Button* NumOne = MakeButton({
         .Size=CalculateByScreenPercent(28.5f, 6.5f), 
         .Position=CalculateByScreenPercent(50.f, 22.5f),
     }, {

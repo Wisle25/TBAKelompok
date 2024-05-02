@@ -3,7 +3,7 @@
 #include "Core.h"
 #include "Components/BaseComponent.h"
 
-enum class ButtonState : sf::Uint8 
+enum class ButtonState : uint8_t 
 {
     None,
     Hover,
@@ -28,7 +28,7 @@ public:
 
     Delegate<void()> OnClicked;
 
-private:
+protected:
     sf::Cursor Cursor;
     ButtonState State = ButtonState::None;
 

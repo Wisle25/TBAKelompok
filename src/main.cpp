@@ -1,6 +1,6 @@
 #include "App.h"
 
-int main()
+int32_t main()
 {
     App MainApp;
 

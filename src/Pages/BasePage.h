@@ -26,9 +26,9 @@ protected:
     void AddText(const FMakeText& Properties);
 
     sf::Vector2f CalculateByScreenPercent(const float X, const float Y);
-    __forceinline sf::Uint16 CalculateTextScreenPercent(float Size)
+    __forceinline uint16_t CalculateTextScreenPercent(float Size)
     {
-        return static_cast<sf::Uint16>(CalculateByScreenPercent(Size, Size).y);
+        return static_cast<uint16_t>(CalculateByScreenPercent(Size, Size).y);
     }
 
     Button* MakeButton(const FMakeShape& ShapeProperties, const FMakeText& TextProperties);

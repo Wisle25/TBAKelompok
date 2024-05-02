@@ -10,7 +10,7 @@ Button::Button(BasePage* Page, const FMakeShape& ShapeProperties, const FMakeTex
     if (TextProperties.TextString != "")
     {
         FMakeText FinalTextProperties = TextProperties;
-        const sf::Uint8 TextSize = ShapeProperties.Size.y / 2.5f;
+        const uint8_t TextSize = ShapeProperties.Size.y / 2.5f;
         FinalTextProperties.Size = TextSize;
         FinalTextProperties.Position = ShapeProperties.Position;
 

@@ -4,8 +4,8 @@
 #include <filesystem>
 
 App::App():
-    Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
-    // Super(sf::VideoMode(800, 600), "TBA Kelompok")
+    // Super(sf::VideoMode::getDesktopMode(), "TBA Kelompok", sf::Style::Fullscreen)
+    Super(sf::VideoMode(800, 600), "TBA Kelompok")
 {
     // Window   
     setFramerateLimit(175);

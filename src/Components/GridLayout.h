@@ -17,9 +17,9 @@ public:
 private:
     // ***===== Using A* for path finding =====*** //
 
-    // NOTE: ONLY FOR TESTING!!!
-    // sf::Vector2i Start;
-    // sf::Vector2i Goal;
+    sf::Vector2i Start;
+    sf::Vector2i Goal;
+    sf::Color PathColor;
 
     // Structure to represent a cell
     struct Cell 
@@ -57,8 +57,7 @@ private:
         return a->GetTotalCost() > b->GetTotalCost();
     }
 
-    // A* algorithm
-    std::vector<Cell*> AStar(std::vector<std::vector<Cell>>& Grid, const sf::Vector2i& StartIdx, const sf::Vector2i& GoalIdx);
+    void ColorizeTransition(const std::vector<Cell*>& Path);
 
     // ***===== Grid System =====*** //
 
@@ -70,4 +69,30 @@ private:
 
     void GenerateGrid();
 
+    sf::Vector2i GetGridCords(const sf::Vector2f& Position);
+
+public:
+    void MakeCellsAsObstacle(const sf::Vector2f& Position, const int32_t Radius);
+
+    const bool IsInBounds() const;
+
+    __forceinline void SetPathColor(const sf::Color& Color)
+    {
+        PathColor = Color;
+    }
+
+    __forceinline void SetStartPoint(const sf::Vector2f& Position)
+    {
+        Start = GetGridCords(Position);
+        Start.x += 3;
+    }
+
+    __forceinline void SetGoalPoint(const sf::Vector2f& Position)
+    {
+        Goal = GetGridCords(Position);
+        Goal.x -= 3;
+    }
+
+    // Visualize Transition using PathFinding with A* algorithm
+    void VisualizeTransition();
 };

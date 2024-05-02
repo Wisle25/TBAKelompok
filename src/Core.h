@@ -3,6 +3,10 @@
 #include <memory>
 #include <cmath>
 #include <stack>
+#include <random>
+#include <vector>
+#include <set>
+#include <map>
 
 #include <iostream> // Remove later at release
 

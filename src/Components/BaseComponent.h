@@ -14,10 +14,10 @@ struct FMakeText
 {
     const std::string& TextString = "";
     const std::string& FontName   = "FiraCode-Regular";
-    sf::Uint16 Size = 12;
+    uint16_t Size = 12;
     sf::Color Color = sf::Color::White;
     sf::Vector2f Position;
-    sf::Uint32 Style = sf::Text::Style::Regular;
+    uint32_t Style = sf::Text::Style::Regular;
 };
 
 struct FMakeShape
@@ -53,9 +53,9 @@ protected:
 
     sf::Vector2f CalculateByScreenPercent(const float X, const float Y);
     
-    __forceinline sf::Uint16 CalculateTextScreenPercent(float Size)
+    __forceinline uint16_t CalculateTextScreenPercent(float Size)
     {
-        return static_cast<sf::Uint16>(CalculateByScreenPercent(Size, Size).y);
+        return static_cast<uint16_t>(CalculateByScreenPercent(Size, Size).y);
     }
     App* GetApp() const;
 
@@ -75,5 +75,9 @@ protected:
     void MakeText(const FMakeText& Properties);
 
 public:
+    __forceinline sf::Vector2f GetPosition() const
+    {
+        return Shapes[0]->getPosition();
+    }
     void SetPosition(const sf::Vector2f& Position);
 };
