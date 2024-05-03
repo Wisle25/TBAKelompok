@@ -1,7 +1,6 @@
 #include "GridLayout.h"
 #include "Shapes/RoundedRectangleShape.h"
 #include "App.h"
-// #include "Pages/BasePage.h"
 
 GridLayout::GridLayout(BasePage* Page, const FMakeShape& ShapeProps):
     Super(Page)
@@ -71,7 +70,7 @@ void GridLayout::MakeCellsAsObstacle(const sf::Vector2f& Position, const int32_t
     int16_t MinX = GridCords.x - Radius;
     int16_t MaxX = GridCords.x + Radius;
     int16_t MinY = GridCords.y - Radius;
-    int16_t MaxY = GridCords.y + Radius;
+    int16_t MaxY = GridCords.y + Radius + 2;
 
     for (int16_t X = MinX; X < MaxX; ++X)
     {
@@ -172,9 +171,15 @@ void GridLayout::ReceiveEvent(const sf::Event& Event)
 
 void GridLayout::ColorizeTransition(const std::vector<Cell*>& Path)
 {
-    for (const auto& Cell : Path)
+    for (int16_t I = 0; I < Path.size(); ++I)
     {
-        Cell->Shape->setFillColor(PathColor);
+        if (I + 1 == Path.size() / 2)
+        {
+            HalfTransition = Path[I]->Shape->getPosition();
+        }
+
+        Path[I]->Shape->setFillColor(PathColor);
+        // Cell->IsObstacle = true;
     }
 }
 

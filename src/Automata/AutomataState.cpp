@@ -55,3 +55,16 @@ void AutomataState::ReceiveEvent(const sf::Event& Event)
         OnAddTransition.Execute(this);
     }
 }
+
+// ==================== Grid ==================== //
+
+void AutomataState::SetStartingPoints(const sf::Vector2i& GridCords)
+{
+    for (int X = -3; X <= 3; X += 3) 
+    {
+        for (int Y = -2; Y <= 2; Y += 2) 
+        {
+            StartingPoints.push_back({ GridCords.x + X, GridCords.y + Y });
+        }
+    }
+}

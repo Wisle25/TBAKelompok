@@ -64,6 +64,10 @@ protected:
 protected:
     // ***===== SFML =====*** //
     
+    bool bDisableTick  = false;
+    bool bDisableEvent = false;
+    bool bDisableDraw  = false;
+
     std::vector<std::shared_ptr<sf::Shape>> Shapes;
     std::vector<std::shared_ptr<sf::Text>> Texts;
     std::vector<std::shared_ptr<BaseComponent>> ChildComponents;

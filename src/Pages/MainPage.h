@@ -5,8 +5,6 @@
 
 class MainPage : public BasePage
 {
-public:
-    typedef BasePage Super;
 
 protected:
     // ***===== Layouting =====*** //

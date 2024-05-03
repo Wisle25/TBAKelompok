@@ -25,6 +25,9 @@ private:
 
     std::string StateName;
     std::set<AutomataState> Transitions;
+    std::vector<sf::Vector2i> StartingPoints;
+
+    int16_t CurrentStartingPoint = 0;
 
     sf::Color Color = COLOR;
     sf::Cursor Cursor;
@@ -35,6 +38,18 @@ private:
 public:
     Delegate<void(AutomataState*)> OnAddTransition;
     Delegate<void(AutomataState*)> OnReceivingTransition;
+
+    void SetStartingPoints(const sf::Vector2i& GridCords);
+
+    __forceinline const sf::Vector2i GetStartingPoint()
+    {
+        return StartingPoints[CurrentStartingPoint++];
+    }
+
+    __forceinline const sf::Vector2i GetGoalPoint()
+    {
+        return StartingPoints[1];
+    }
 
     __forceinline std::string& GetStateName()
     {

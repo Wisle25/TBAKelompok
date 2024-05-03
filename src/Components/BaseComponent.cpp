@@ -11,26 +11,32 @@ BaseComponent::BaseComponent(BasePage* Page):
 
 void BaseComponent::ReceiveEvent(const sf::Event& Event)
 {
+    if (bDisableEvent) return;
+
     for (const auto& Child : ChildComponents)
         Child->ReceiveEvent(Event);
 }
 
 void BaseComponent::Tick(const float DeltaTime)
 {
+    if (bDisableTick) return;
+
     for (const auto& Child : ChildComponents)    
         Child->Tick(DeltaTime);
 }
 
 void BaseComponent::draw(sf::RenderTarget& Target, sf::RenderStates States) const
 {
+    if (bDisableDraw) return;
+
     for (const auto& Shape : Shapes)
         Target.draw(*Shape);
 
-    for (const auto& Text : Texts)
-        Target.draw(*Text);
-
     for (const auto& Child : ChildComponents)
         Target.draw(*Child);
+
+    for (const auto& Text : Texts)
+        Target.draw(*Text);
 }
 
 void BaseComponent::MakeText(const FMakeText& Properties)

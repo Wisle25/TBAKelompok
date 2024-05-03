@@ -2,11 +2,11 @@
 #include "App.h"
 #include "Components/Button.h"
 #include "Pages/NumOnePage.h"
+#include "Pages/NumFourPage.h"
 
 void MainPage::CreateLayout()
 {
-    Name = "MainPage";
-    Super::CreateLayout();
+    BasePage::CreateLayout();
     
     // *** Text *** //
     AddText({
@@ -25,6 +25,14 @@ void MainPage::CreateLayout()
         .TextString="Convert NFA or e-NFA to DFA"
     });
     NumOne->OnClicked.Bind(this, &MainPage::NumOneOnClicked);
+
+    Button* NumFour = MakeButton({
+        .Size=CalculateByScreenPercent(28.5f, 6.5f), 
+        .Position=CalculateByScreenPercent(50.f, 50.f),
+    }, {
+        .TextString="Cek Equivalensi dua DFA"
+    });
+    NumFour->OnClicked.Bind(this, &MainPage::NumFourOnClicked);
 }
 
 ///////////////////////////////////////////////
@@ -47,5 +55,5 @@ void MainPage::NumThreeOnClicked()
 
 void MainPage::NumFourOnClicked()
 {
-    
+    GetApp()->GoToPage<NumFourPage>();
 }

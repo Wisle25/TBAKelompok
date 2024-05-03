@@ -19,6 +19,7 @@ private:
 
     sf::Vector2i Start;
     sf::Vector2i Goal;
+    sf::Vector2f HalfTransition;
     sf::Color PathColor;
 
     // Structure to represent a cell
@@ -69,9 +70,16 @@ private:
 
     void GenerateGrid();
 
-    sf::Vector2i GetGridCords(const sf::Vector2f& Position);
-
 public:
+    __forceinline sf::Vector2f GetHalfTransition(const float Offset = 2.f)
+    {
+        HalfTransition.x -= Offset;
+        HalfTransition.y -= Offset;
+
+        return HalfTransition;
+    }
+
+    sf::Vector2i GetGridCords(const sf::Vector2f& Position);
     void MakeCellsAsObstacle(const sf::Vector2f& Position, const int32_t Radius);
 
     const bool IsInBounds() const;
@@ -81,16 +89,14 @@ public:
         PathColor = Color;
     }
 
-    __forceinline void SetStartPoint(const sf::Vector2f& Position)
+    __forceinline void SetStartPoint(const sf::Vector2i& GridCords)
     {
-        Start = GetGridCords(Position);
-        Start.x += 3;
+        Start = GridCords;
     }
 
-    __forceinline void SetGoalPoint(const sf::Vector2f& Position)
+    __forceinline void SetGoalPoint(const sf::Vector2i& GridCords)
     {
-        Goal = GetGridCords(Position);
-        Goal.x -= 3;
+        Goal = GridCords;
     }
 
     // Visualize Transition using PathFinding with A* algorithm
